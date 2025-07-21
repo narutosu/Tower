@@ -64,7 +64,8 @@ namespace UnLua
             collectgarbage("collect")
             require(name)
         )");
-        const auto Chunk = FString::Printf(Format, *Args[0]);
+        FString ChunkStr = Args[0];
+        const auto Chunk = FString::Printf(TEXT("\r\nlocal name = \"%s\"package.loaded[name] = nil\r\ncollectgarbage(\"collect\")\r\nrequire(name)\r\n"), *ChunkStr);
         Env->DoString(Chunk);
     }
 
