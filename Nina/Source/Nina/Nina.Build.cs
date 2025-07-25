@@ -22,7 +22,17 @@ public class Nina : ModuleRules
 			"UMG"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
+			"GameplayAbilities",
+            "GameplayTags",
+            "GameplayTasks",
+			"Slate",
+			"SlateCore",
+			"InputCore",
+			"MoviePlayer",
+			"AIModule"
+		});
 
 		PublicIncludePaths.AddRange(new string[] {
 			"Nina",
