@@ -9,18 +9,18 @@ const FPrimaryAssetType	URPGAssetManager::SkillItemType = TEXT("Skill");
 const FPrimaryAssetType	URPGAssetManager::TokenItemType = TEXT("Token");
 const FPrimaryAssetType	URPGAssetManager::WeaponItemType = TEXT("Weapon");
 
-URPGAssetManager& URPGAssetManager::Get()
+URPGAssetManager* URPGAssetManager::Get()
 {
 	URPGAssetManager* This = Cast<URPGAssetManager>(GEngine->AssetManager);
 
 	if (This)
 	{
-		return *This;
+		return This;
 	}
 	else
 	{
 		UE_LOG(LogNina, Fatal, TEXT("Invalid AssetManager in DefaultEngine.ini, must be RPGAssetManager!"));
-		return *NewObject<URPGAssetManager>(); // never calls this
+		return NewObject<URPGAssetManager>(); // never calls this
 	}
 }
 
@@ -32,12 +32,12 @@ void URPGAssetManager::StartInitialLoading()
 }
 
 
-URPGItem* URPGAssetManager::ForceLoadItem(const FPrimaryAssetId& PrimaryAssetId, bool bLogWarning)
+UPrimaryDataAsset* URPGAssetManager::ForceLoadItem(const FPrimaryAssetId& PrimaryAssetId, bool bLogWarning)
 {	
 	FSoftObjectPath ItemPath = GetPrimaryAssetPath(PrimaryAssetId);
 
 	// This does a synchronous load and may hitch
-	URPGItem* LoadedItem = Cast<URPGItem>(ItemPath.TryLoad());
+	UPrimaryDataAsset* LoadedItem = Cast<UPrimaryDataAsset>(ItemPath.TryLoad());
 
 	if (bLogWarning && LoadedItem == nullptr)
 	{

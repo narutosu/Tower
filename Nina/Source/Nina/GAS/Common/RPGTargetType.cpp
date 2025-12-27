@@ -9,20 +9,20 @@ void URPGTargetType::GetTargets_Implementation(ARoleBase* TargetingCharacter, AA
 	return;
 }
 
-// void URPGTargetType_UseOwner::GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<const AActor*>& OutActors) const
-// {
-// 	OutActors.Add(TargetingCharacter);
-// }
-//
-// void URPGTargetType_UseEventData::GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<const AActor*>& OutActors) const
-// {
-// 	const FHitResult* FoundHitResult = EventData.ContextHandle.GetHitResult();
-// 	if (FoundHitResult)
-// 	{
-// 		OutHitResults.Add(*FoundHitResult);
-// 	}
-// 	else if (EventData.Target)
-// 	{
-// 		OutActors.Add(EventData.Target);
-// 	}
-// }
+void URPGTargetType_UseOwner::GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const
+{
+	OutActors.Add(TargetingCharacter);
+}
+
+void URPGTargetType_UseEventData::GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const
+{
+	const FHitResult* FoundHitResult = EventData.ContextHandle.GetHitResult();
+	if (FoundHitResult)
+	{
+		OutHitResults.Add(*FoundHitResult);
+	}
+	else if (EventData.Target)
+	{
+		OutActors.Add(const_cast<AActor*>(EventData.Target.Get()));
+	}
+}

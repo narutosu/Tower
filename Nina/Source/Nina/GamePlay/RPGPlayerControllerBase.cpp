@@ -290,14 +290,14 @@ bool ARPGPlayerControllerBase::LoadInventory()
 	}
 
 	URPGSaveGame* CurrentSaveGame = GameInstance->GetCurrentSaveGame();
-	URPGAssetManager& AssetManager = URPGAssetManager::Get();
+	URPGAssetManager* AssetManager = URPGAssetManager::Get();
 	if (CurrentSaveGame)
 	{
 		// Copy from save game into controller data
 		bool bFoundAnySlots = false;
 		for (const TPair<FPrimaryAssetId, FRPGItemData>& ItemPair : CurrentSaveGame->InventoryData)
 		{
-			URPGItem* LoadedItem = AssetManager.ForceLoadItem(ItemPair.Key);
+			URPGItem* LoadedItem = Cast<URPGItem>(AssetManager->ForceLoadItem(ItemPair.Key));
 
 			if (LoadedItem != nullptr)
 			{
@@ -309,7 +309,7 @@ bool ARPGPlayerControllerBase::LoadInventory()
 		{
 			if (SlotPair.Value.IsValid())
 			{
-				URPGItem* LoadedItem = AssetManager.ForceLoadItem(SlotPair.Value);
+				URPGItem* LoadedItem = Cast<URPGItem>(AssetManager->ForceLoadItem(SlotPair.Value));
 				if (GameInstance->IsValidItemSlot(SlotPair.Key) && LoadedItem)
 				{
 					SlottedItems.Add(SlotPair.Key, LoadedItem);

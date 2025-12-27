@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Role/RolePlayerState.h"
-#include "GAS/Component/GSAbilitySystemComponent.h"
+#include "GAS/Common/RPGAbilitySystemComponent.h"
 #include "GAS/Attribute/GSRoleAttributeSet.h"
 
 
 ARolePlayerState::ARolePlayerState()
 {
 	// Create ability system component, and set it to be explicitly replicated
-	AbilitySystemComponent = CreateDefaultSubobject<UGSAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<URPGAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	// Mixed mode means we only are replicated the GEs to ourself, not the GEs to simulated proxies. If another GDPlayerState (Hero) receives a GE,

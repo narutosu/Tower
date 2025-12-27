@@ -45,9 +45,9 @@ public:
     FGameplayAttributeData Attack;
     ATTRIBUTE_ACCESSORS(UGSRoleAttributeSet, Attack)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", ReplicatedUsing = OnRep_AttackRate)
-    FGameplayAttributeData AttackRate;//攻击频率
-    ATTRIBUTE_ACCESSORS(UGSRoleAttributeSet, AttackRate)
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", ReplicatedUsing = OnRep_AttackSpeed)
+    FGameplayAttributeData AttackSpeed;//攻击速度
+    ATTRIBUTE_ACCESSORS(UGSRoleAttributeSet, AttackSpeed)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", ReplicatedUsing = OnRep_CriticalProb)
 	FGameplayAttributeData CriticalProb;//暴击率
@@ -98,7 +98,7 @@ protected:
     virtual void OnRep_Attack(const FGameplayAttributeData& OldAttack);
 
 	UFUNCTION()
-    virtual void OnRep_AttackRate(const FGameplayAttributeData& OldAttackRate);
+    virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed);
 
 	UFUNCTION()
     virtual void OnRep_CriticalProb(const FGameplayAttributeData& OldCriticalProb);

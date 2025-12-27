@@ -24,7 +24,7 @@ public:
 	class UGSRoleAttributeSet* GetRoleAttributeSet() const;
 protected:
 	UPROPERTY()
-	class UGSAbilitySystemComponent* AbilitySystemComponent;
+	class URPGAbilitySystemComponent* AbilitySystemComponent;
 
 	UPROPERTY()
 	class UGSRoleAttributeSet* RoleAttributeSet;

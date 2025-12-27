@@ -72,7 +72,8 @@ void ULuaOverridesClass::AddToOwner()
 
     auto Field = &ChildrenPtr;
 #else
-    auto Field = &(Class->Children);
+    auto ChildrenPtr = Class->Children.Get();
+    auto Field = &ChildrenPtr;
 #endif
     while (*Field)
     {
@@ -81,7 +82,8 @@ void ULuaOverridesClass::AddToOwner()
             Field = nullptr;
             break;
         }
-        Field = &(*Field)->Next;
+        UField* FieldNext = (*Field)->Next;
+        Field = &(FieldNext);
     }
 
     if (Field)
@@ -102,7 +104,8 @@ void ULuaOverridesClass::RemoveFromOwner()
 
     auto Field = &ChildrenPtr;
 #else
-    auto Field = &Class->Children;
+    auto ChildrenPtr = Class->Children.Get();
+    auto Field = &ChildrenPtr;
 #endif
     while (*Field)
     {
@@ -111,7 +114,8 @@ void ULuaOverridesClass::RemoveFromOwner()
             *Field = nullptr;
             break;
         }
-        Field = &(*Field)->Next;
+        UField* FieldNext = (*Field)->Next;
+        Field = &(FieldNext);
     }
 
     if (!Class->IsRooted() && !GUObjectArray.IsDisregardForGC(Class))

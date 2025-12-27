@@ -1,0 +1,38 @@
+{
+	"Epic": {
+		"ShadowQuality": "4",
+		"ShadingQuality": "4",
+		"AntiAliasingQuality": "3",
+		"BloomQuality": "3",
+		"DepthOfFieldQuality": "3",
+		"PhysicsQuality": "3",
+        "ScreenPercentage": "1"
+	},
+	"High": {
+		"ShadowQuality": "3",
+		"ShadingQuality": "3",
+		"AntiAliasingQuality": "3",
+		"BloomQuality": "2",
+		"DepthOfFieldQuality": "2",
+		"PhysicsQuality": "3",
+        "ScreenPercentage": "0.5"
+	},
+	"Mid": {
+		"ShadowQuality": "2",
+		"ShadingQuality": "2",
+		"AntiAliasingQuality": "2",
+		"BloomQuality": "1",
+		"DepthOfFieldQuality": "1",
+		"PhysicsQuality": "1",
+		"ScreenPercentage": "0.5"
+	},
+	"Low": {
+		"ShadowQuality": "1",
+		"ShadingQuality": "1",
+		"AntiAliasingQuality": "1",
+		"BloomQuality": "0",
+		"DepthOfFieldQuality": "0",
+		"PhysicsQuality": "0",
+        "ScreenPercentage": "0.5"
+	}
+}

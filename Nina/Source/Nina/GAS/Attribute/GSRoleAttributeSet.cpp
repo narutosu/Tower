@@ -1,8 +1,11 @@
 #include "GSRoleAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "Nina.h"
 #include "Net/UnrealNetwork.h"
+#include "Role/RoleBase.h"
 
 UGSRoleAttributeSet::UGSRoleAttributeSet()
+	:AttackSpeed(1.0f)
 {
 	
 }
@@ -15,6 +18,39 @@ void UGSRoleAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 void UGSRoleAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+
+	// Compute the delta between old and new, if it is available
+	float DeltaValue = 0;
+	if (Data.EvaluatedData.ModifierOp == EGameplayModOp::Type::Additive)
+	{
+		// If this was additive, store the raw delta value to be passed along later
+		DeltaValue = Data.EvaluatedData.Magnitude;
+	}
+
+	
+	// Get the Target actor, which should be our owner
+	AActor* TargetActor = nullptr;
+	AController* TargetController = nullptr;
+	ARoleBase* TargetCharacter = nullptr;
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		TargetCharacter = Cast<ARoleBase>(TargetActor);
+	}
+	
+	if (Data.EvaluatedData.Attribute == GetSpeedAttribute())
+	{
+		if (TargetCharacter)
+		{
+			// Call for all movespeed changes
+			TargetCharacter->HandleMoveSpeedChanged(GetSpeed(), SourceTags);
+		}
+	}
 }
 
 void UGSRoleAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -25,7 +61,7 @@ void UGSRoleAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, HPRegenRate, COND_None, REPNOTIFY_Always);
 	
 	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, Attack, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, AttackRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, CriticalProb, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, CriticalDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGSRoleAttributeSet, Armor, COND_None, REPNOTIFY_Always);
@@ -56,9 +92,9 @@ void UGSRoleAttributeSet::OnRep_Attack(const FGameplayAttributeData& OldAttack)
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGSRoleAttributeSet, Attack, OldAttack);
 }
 
-void UGSRoleAttributeSet::OnRep_AttackRate(const FGameplayAttributeData& OldAttackRate)
+void UGSRoleAttributeSet::OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed)
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UGSRoleAttributeSet, AttackRate, OldAttackRate);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGSRoleAttributeSet, AttackSpeed, OldAttackSpeed);
 }
 
 void UGSRoleAttributeSet::OnRep_CriticalProb(const FGameplayAttributeData& OldCriticalProb)
@@ -89,6 +125,7 @@ void UGSRoleAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel)
 void UGSRoleAttributeSet::OnRep_Speed(const FGameplayAttributeData& OldSpeed)
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGSRoleAttributeSet, Speed, OldSpeed);
+	UE_LOG(LogNina, Warning, TEXT("OnRep_Speed"));
 }
 
 void UGSRoleAttributeSet::OnRep_Gold(const FGameplayAttributeData& OldGold)

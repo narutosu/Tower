@@ -1,0 +1,7 @@
+
+[Editor]
+riderPluginsPath=(Replace your Rider path)/plugins/EmmyLua/debugger/emmy/windows/x64/?.dll
+bEnableDebug=True
+bEnableWaitIDE=False
+
+

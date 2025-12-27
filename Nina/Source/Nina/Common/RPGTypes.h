@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------------------------------------------
 
 #include "UObject/PrimaryAssetId.h"
+// #include "RPGAssetManager.h"
 #include "RPGTypes.generated.h"
 
 class URPGItem;
@@ -37,6 +38,12 @@ struct FRPGItemSlot
 	/** The number of this slot, 0 indexed */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 	int32 SlotNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	TSoftObjectPtr<URPGItem> ItemSoftPtr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+    FPrimaryAssetId ItemAssetId;
 
 	/** Equality operators */
 	bool operator==(const FRPGItemSlot& Other) const
@@ -123,6 +130,95 @@ struct FRPGItemData
 		ItemCount = FMath::Clamp(ItemCount + Other.ItemCount, 1, MaxCount);
 		ItemLevel = FMath::Clamp(Other.ItemLevel, 1, MaxLevel);
 	}
+};
+
+/** Extra information about a URPGItem that is in a player's inventory */
+USTRUCT(BlueprintType)
+struct FItemData
+{
+	GENERATED_BODY()
+
+	/** Constructor, default to count/level 1 so declaring them in blueprints gives you the expected behavior */
+	FItemData()
+		:SlotNumber(-1)
+		,ItemCount(1)
+		,ItemLevel(1)
+	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	FPrimaryAssetId ItemAssetId;
+
+	/** The number of this slot, 0 indexed */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	int32 SlotNumber;
+
+	/** The number of instances of this item in the inventory, can never be below 1 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	int32 ItemCount;
+
+	/** The level of this item. This level is shared for all instances, can never be below 1 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	int32 ItemLevel;
+
+	UPROPERTY()
+	URPGItem* RPGItem = nullptr;
+
+	UPROPERTY()
+	class URPGGameplayAbility* RPGAbility = nullptr;
+	
+	/** Equality operators */
+	bool operator==(const FItemData& Other) const
+	{
+		return ItemCount == Other.ItemCount && ItemLevel == Other.ItemLevel && ItemAssetId == Other.ItemAssetId && SlotNumber == Other.SlotNumber;
+	}
+	bool operator!=(const FItemData& Other) const
+	{
+		return !(*this == Other);
+	}
+
+	friend inline uint32 GetTypeHash(const FItemData& Key)
+	{
+		uint32 Hash = 0;
+
+		Hash = HashCombine(Hash, GetTypeHash(Key.ItemAssetId.PrimaryAssetType));
+		Hash = HashCombine(Hash, GetTypeHash(Key.ItemAssetId.PrimaryAssetName));
+		Hash = HashCombine(Hash, GetTypeHash(Key.ItemLevel));
+		Hash = HashCombine(Hash, (uint32)Key.SlotNumber);
+		return Hash;
+	}
+
+	/** Returns true if count is greater than 0 */
+	bool IsValid() const
+	{
+		return ItemCount > 0;
+	}
+
+	/** Append an item data, this adds the count and overrides everything else */
+	void UpdateItemData(const FItemData& Other, int32 MaxCount, int32 MaxLevel)
+	{
+		if (MaxCount <= 0)
+		{
+			MaxCount = MAX_int32;
+		}
+
+		if (MaxLevel <= 0)
+		{
+			MaxLevel = MAX_int32;
+		}
+
+		ItemCount = FMath::Clamp(ItemCount + Other.ItemCount, 1, MaxCount);
+		ItemLevel = FMath::Clamp(Other.ItemLevel, 1, MaxLevel);
+	}
+
+	// void LoadRPGItem()
+	// {
+	// 	RPGItem = URPGAssetManager::Get().ForceLoadItem(ItemAssetId);
+	// }
+
+	URPGItem* GetRPGItem()
+    {
+        return RPGItem;
+    }
 };
 
 /** Delegate called when an inventory item changes */

@@ -28,33 +28,33 @@ public:
 	/** Called to determine targets to apply gameplay effects to */
 	UFUNCTION(BlueprintNativeEvent)
 	void GetTargets(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const;
-	void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const;
+	virtual  void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const;
 };
-//
-// /** Trivial target type that uses the owner */
-// UCLASS(NotBlueprintable)
-// class URPGTargetType_UseOwner : public URPGTargetType
-// {
-// 	GENERATED_BODY()
-//
-// public:
-// 	// Constructor and overrides
-// 	URPGTargetType_UseOwner() {}
-//
-// 	/** Uses the passed in event data */
-// 	virtual void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<const AActor*>& OutActors) const override;
-// };
-//
-// /** Trivial target type that pulls the target out of the event data */
-// UCLASS(NotBlueprintable)
-// class URPGTargetType_UseEventData : public URPGTargetType
-// {
-// 	GENERATED_BODY()
-//
-// public:
-// 	// Constructor and overrides
-// 	URPGTargetType_UseEventData() {}
-//
-// 	/** Uses the passed in event data */
-// 	virtual void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<const AActor*>& OutActors) const override;
-// };
+
+/** Trivial target type that uses the owner */
+UCLASS(NotBlueprintable)
+class URPGTargetType_UseOwner : public URPGTargetType
+{
+	GENERATED_BODY()
+
+public:
+	// Constructor and overrides
+	URPGTargetType_UseOwner() {}
+
+	/** Uses the passed in event data */
+	virtual  void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
+};
+
+/** Trivial target type that pulls the target out of the event data */
+UCLASS(NotBlueprintable)
+class URPGTargetType_UseEventData : public URPGTargetType
+{
+	GENERATED_BODY()
+
+public:
+	// Constructor and overrides
+	URPGTargetType_UseEventData() {}
+
+	/** Uses the passed in event data */
+	virtual void GetTargets_Implementation(ARoleBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
+};

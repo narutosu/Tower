@@ -13,5 +13,7 @@ UCLASS()
 class NINA_API ARoleHero : public ARoleBase
 {
 	GENERATED_BODY()
-	
+private:
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
 };
